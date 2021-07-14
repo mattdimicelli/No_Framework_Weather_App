@@ -59,8 +59,8 @@ function renderText(data) {
     const dateOptions = { dateStyle: 'full', timeStyle: 'short' };
 
     // The API request fetches the temp values in  F, so only need to calculate C
-    const currentTempValue = convertTempToChosenScale(data.currentTemperature);
-    const currentFeelsLikeValue = convertTempToChosenScale(data.currentFeelsLike);
+    const currentTempValue = convertTempToChosenScaleAndRound(data.currentTemperature);
+    const currentFeelsLikeValue = convertTempToChosenScaleAndRound(data.currentFeelsLike);
     const degrees = '°' + scale; 
 
     cityName.textContent = data.cityName;
@@ -82,8 +82,8 @@ function renderCurrentWeatherImg(data) {
     getCrazyWeatherImg(data.currentDescription).then(url => currentImg.src = url);
 }
 
-function convertTempToChosenScale(value) {
-    return scale === 'F' ? value : Number(((value - 32) * (5/9)).toFixed(2));
+function convertTempToChosenScaleAndRound(value) {
+    return scale === 'F' ? Math.round(value) : Math.round(Number(((value - 32) * (5/9)).toFixed(2)));
 }
 
 async function getWeatherDataForCity(cityName) {
