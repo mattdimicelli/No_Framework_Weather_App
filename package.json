@@ -1,0 +1,22 @@
+{
+  "name": "weather-app",
+  "version": "1.0.0",
+  "description": "",
+  "main": "script.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/mattdimicelli/weather-app.git"
+  },
+  "author": "",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/mattdimicelli/weather-app/issues"
+  },
+  "homepage": "https://github.com/mattdimicelli/weather-app#readme",
+  "devDependencies": {
+    "eslint": "^7.30.0"
+  }
+}

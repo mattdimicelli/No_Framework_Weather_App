@@ -4,10 +4,39 @@
 <head>
     <meta charset="utf-8" />
     <title>Weather Forecast</title>
-    <link rel="stylesheet" href="styles.css" />
+    <link rel="stylesheet" type="text/css" href="./styles.css">
 </head>
 
 <body>
+    <header>
+        <form>
+            <input type="search" id="cityName" placeholder="Search Location..." />
+            <button>Submit</button>
+        </form>
+        <div>
+        <span>F</span>
+        <label class="degrees-switch">
+            <input type="checkbox">
+            <span class="slider round"></span>
+        </label>
+        <span>C</span>
+        </div>
+    </header>
+    <div class="current-weather">
+        <div>
+            <div class="current current-description"><div></div></div>
+            <div class="current current-city-name"><div></div></div>
+            <div class="current current-data-time"><div></div></div>
+            <div class="current current-temp"><div></div></div>
+        </div>  
+        <img class="current-img" />
+        <div>
+            <div class="label current current-humidity">Current Humidity: <div class="value"></div></div>
+            <div class="label current current-feels-like">Feels Like: <div class="value"></div></div>
+            <div class="label current current-wind-speed">Wind Speed: <div class="value"></div></div>
+            <div class="label current precipitation-next-hour">Chance of Precipitation During Next Hour: <div class="value"></div></div>
+        </div>
+    </div>
     <script src="script.js">
 
     </script>
