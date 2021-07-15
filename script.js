@@ -1,7 +1,5 @@
 'use strict';
 
-
-
 const cityNameInput = document.querySelector('#cityName');
 const submitBtn = document.querySelector('#cityName + button');
 const degreesSwitch = document.querySelector('.degrees-switch input');
@@ -71,6 +69,7 @@ function renderText(data) {
     precipitationNextHour.textContent = data.precipitationNextHour + ' %';
 
     const dailyForecastDiv = document.querySelector('.daily-forecast');
+    const hourlyForecastDiv = document.querySelector('.hourly-forecast');
     data.dailyData.forEach((day, index) => {
         if (dailyForecastDiv.children.length >= 0 && dailyForecastDiv.children.length <= 6) {
             const singleDay = document.createElement('div');
@@ -103,7 +102,12 @@ function renderText(data) {
             const minTemp = document.getElementsByClassName(`minTemp day${index}`)[0];
             const dailyMinTempValue = convertTempToChosenScaleAndRound(day.minTemp);
             minTemp.textContent = dailyMinTempValue + ' ' + degrees;
-            const nameOfDay = new Date(day.dayTime * 1000).toLocaleDateString(undefined, { weekday: 'long' });
+            let nameOfDay;
+            if (new Date(day.dayTime * 1000).getDate() === new Date().getDate()) {
+                nameOfDay = 'Today';
+            } else {
+                nameOfDay = new Date(day.dayTime * 1000).toLocaleDateString(undefined, { weekday: 'long' });
+            }           
             const nameOfDayDiv = document.getElementsByClassName(`nameOfDay day${index}`)[0];
             nameOfDayDiv.textContent = nameOfDay;
             nameOfDayDiv.className = `nameOfDay day${index}`;
@@ -112,10 +116,25 @@ function renderText(data) {
             icon.className = `icon day${index}`;
         } 
     });
+    data.hourlyData.forEach((hour, index) => {
+        if (hourlyForecastDiv.children.length >= 0 && hourlyForecastDiv.children.length <= 24) {
+            const singleHour = document.createElement('div');
+            const time = document.createElement('div');
+            time.className = `time hour${index}`;
+            const timeValue = new Date(hour.hourTime * 1000).toLocaleTimeString(undefined, { hour: 'numeric', hour12: true, });
+            time.textContent = timeValue;
+            const temp = document.createElement('div');
+            temp.className = `temp hour${index}`;
+            const tempValue = convertTempToChosenScaleAndRound(hour.hourTemp);
+            temp.textContent = tempValue + ' ' + degrees;
+            const icon = document.createElement('img');
+            icon.src = `http://openweathermap.org/img/wn/${hour.iconId}@2x.png`;
+            icon.className = `icon hour${index}`;
+            singleHour.append(time, temp, icon);
+            hourlyForecastDiv.append(singleHour);
 
-    
-
-    
+        }
+    });
 }
 
 function renderCurrentWeatherImg(data) {
@@ -138,7 +157,6 @@ async function getWeatherDataForCity(cityName) {
     const responseHourlyAndDaily = await fetch(`https://api.openweathermap.org/data/2.5/onecall?lat=${latitude}&lon=${longitude}&units=imperial&exclude=current,minutely,alerts&appid=72e691cc8e68804d3b51462e3f5c963f`, { mode: 'cors' });
     const dataHourlyAndDaily = await responseHourlyAndDaily.json();
     
-    
     const dataObj = makeUsefulWeatherDataObj(dataCurrentWeather, dataHourlyAndDaily);
    
     return dataObj;
@@ -160,7 +178,7 @@ function makeUsefulWeatherDataObj(dataCurrentWeather, dataHourlyAndDaily) {
             return { iconId: day.weather[0].icon, maxTemp: day.temp.max, minTemp: day.temp.min, description: day.weather[0].description, category: day.weather[0].main, dayTime: day.dt};
         }),
         hourlyData: dataHourlyAndDaily.hourly.slice(0,24).map(hour => {
-            return {hourTime: hour.dt, hourTemp: hour.temp, hourCategory: hour.weather[0].main };
+            return { iconId: hour.weather[0].icon, hourTime: hour.dt, hourTemp: hour.temp, hourCategory: hour.weather[0].main };
         }),
         precipitationNextHour: dataHourlyAndDaily.hourly[0].pop,       
     };
@@ -172,7 +190,6 @@ async function getWeatherImg(weatherDescription) {
     const gifObj = json.data;
     console.log(gifObj);
     return gifObj.images.fixed_height.url;
-
 }
 
 
