@@ -7,7 +7,7 @@ const submitBtn = document.querySelector('#cityName + button');
 const degreesSwitch = document.querySelector('.degrees-switch input');
 
 degreesSwitch.addEventListener('input', chooseTempScale);
-submitBtn.addEventListener('click', search);
+submitBtn.addEventListener('click', searchForCity);
 
 
 let scale = 'F';
@@ -33,7 +33,7 @@ function initializePage() {
     }).catch(err => console.error(err));
 }
 
-function search(e) {
+function searchForCity(e) {
     e.preventDefault();
     data = getWeatherDataForCity(cityNameInput.value).then(data => {
         renderText(data);
@@ -54,8 +54,6 @@ function renderText(data) {
     const currentWindSpeed = document.querySelector('.current-wind-speed > div');
     const precipitationNextHour = document.querySelector('.precipitation-next-hour > div');
     
-
-
     const dateOptions = { dateStyle: 'full', timeStyle: 'short' };
 
     // The API request fetches the temp values in  F, so only need to calculate C
@@ -72,6 +70,49 @@ function renderText(data) {
     currentWindSpeed.textContent = data.currentWindSpeed + ' mph';
     precipitationNextHour.textContent = data.precipitationNextHour + ' %';
 
+    const dailyForecastDiv = document.querySelector('.daily-forecast');
+    data.dailyData.forEach((day, index) => {
+        if (dailyForecastDiv.children.length >= 0 && dailyForecastDiv.children.length <= 6) {
+            const singleDay = document.createElement('div');
+            const nameOfDayDiv = document.createElement('div');
+            let nameOfDay;
+            if (new Date(day.dayTime * 1000).getDate() === new Date().getDate()) {
+                nameOfDay = 'Today';
+            } else {
+                nameOfDay = new Date(day.dayTime * 1000).toLocaleDateString(undefined, { weekday: 'long' });
+            }
+            nameOfDayDiv.textContent = nameOfDay;
+            nameOfDayDiv.className = `nameOfDay day${index}`;
+            const maxTemp = document.createElement('div');
+            const dailyMaxTempValue = convertTempToChosenScaleAndRound(day.maxTemp);
+            maxTemp.textContent = dailyMaxTempValue + ' ' + degrees;
+            maxTemp.className = `maxTemp day${index}`;
+            const minTemp = document.createElement('div');
+            const dailyMinTempValue = convertTempToChosenScaleAndRound(day.minTemp);
+            minTemp.textContent = dailyMinTempValue + ' ' + degrees;
+            minTemp.className = `minTemp day${index}`;
+            const icon = document.createElement('img');
+            icon.src = `http://openweathermap.org/img/wn/${day.iconId}@2x.png`;
+            icon.className = `icon day${index}`;
+            singleDay.append(nameOfDayDiv, maxTemp, minTemp, icon);
+            dailyForecastDiv.append(singleDay);
+        } else {
+            const maxTemp = document.getElementsByClassName(`maxTemp day${index}`)[0];
+            const dailyMaxTempValue = convertTempToChosenScaleAndRound(day.maxTemp);
+            maxTemp.textContent = dailyMaxTempValue + ' ' + degrees;
+            const minTemp = document.getElementsByClassName(`minTemp day${index}`)[0];
+            const dailyMinTempValue = convertTempToChosenScaleAndRound(day.minTemp);
+            minTemp.textContent = dailyMinTempValue + ' ' + degrees;
+            const nameOfDay = new Date(day.dayTime * 1000).toLocaleDateString(undefined, { weekday: 'long' });
+            const nameOfDayDiv = document.getElementsByClassName(`nameOfDay day${index}`)[0];
+            nameOfDayDiv.textContent = nameOfDay;
+            nameOfDayDiv.className = `nameOfDay day${index}`;
+            const icon = document.getElementsByClassName(`icon day${index}`)[0];
+            icon.src = `http://openweathermap.org/img/wn/${day.iconId}@2x.png`;
+            icon.className = `icon day${index}`;
+        } 
+    });
+
     
 
     
@@ -79,7 +120,7 @@ function renderText(data) {
 
 function renderCurrentWeatherImg(data) {
     const currentImg = document.querySelector('.current-img');
-    getCrazyWeatherImg(data.currentDescription).then(url => currentImg.src = url);
+    getWeatherImg(data.currentDescription).then(url => currentImg.src = url);
 }
 
 function convertTempToChosenScaleAndRound(value) {
@@ -115,8 +156,8 @@ function makeUsefulWeatherDataObj(dataCurrentWeather, dataHourlyAndDaily) {
         currentWeatherCategory: dataCurrentWeather.weather[0].main,
         currentDescription: dataCurrentWeather.weather[0].description,
         cityName: dataCurrentWeather.name,
-        dailyData: dataHourlyAndDaily.daily.map(day => {
-            return { maxTemp: day.temp.max, minTemp: day.temp.min, description: day.weather[0].description, category: day.weather[0].main,};
+        dailyData: dataHourlyAndDaily.daily.slice(0,7).map(day => {
+            return { iconId: day.weather[0].icon, maxTemp: day.temp.max, minTemp: day.temp.min, description: day.weather[0].description, category: day.weather[0].main, dayTime: day.dt};
         }),
         hourlyData: dataHourlyAndDaily.hourly.slice(0,24).map(hour => {
             return {hourTime: hour.dt, hourTemp: hour.temp, hourCategory: hour.weather[0].main };
@@ -125,7 +166,7 @@ function makeUsefulWeatherDataObj(dataCurrentWeather, dataHourlyAndDaily) {
     };
 }
 
-async function getCrazyWeatherImg(weatherDescription) {
+async function getWeatherImg(weatherDescription) {
     const response = await fetch(`https://api.giphy.com/v1/gifs/translate?api_key=yAhCNvI0f6znmTUpEGMtSmH48m1iAzKU&s=${weatherDescription}`, { mode: 'cors'} );
     const json = await response.json();
     const gifObj = json.data;

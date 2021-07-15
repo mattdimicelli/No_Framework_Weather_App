@@ -91,3 +91,20 @@ header {
     display: flex;
     justify-content: space-between;
 }
+
+.daily-forecast {
+    display: flex;
+    justify-content: space-around;
+}
+
+.nameOfDay {
+    font-size: 2rem;
+}
+
+.maxTemp {
+    font-size: 1.7rem;
+}
+
+.minTemp {
+    font-size: 1.3rem;
+}
