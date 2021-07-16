@@ -3,15 +3,110 @@
 const cityNameInput = document.querySelector('#cityName');
 const submitBtn = document.querySelector('#cityName + button');
 const degreesSwitch = document.querySelector('.degrees-switch input');
+const dailyHourlySwitch = document.querySelector('.daily-hourly-switch input');
+const dailyForecastDiv = document.querySelector('.daily-forecast');
+const firstEightHoursDiv = document.querySelector('.first-eight-hours');
+const secondEightHoursDiv = document.querySelector('.second-eight-hours');
+const thirdEightHoursDiv = document.querySelector('.third-eight-hours');
+const leftArrow = document.querySelector('.left-arrow');
+const rightArrow = document.querySelector('.right-arrow');
+const navDots = document.querySelector('.navigation-dots');
+const dot1 = document.querySelector('.dot1');
+const dot2 = document.querySelector('.dot2');
+const dot3 = document.querySelector('.dot3');
+
+
 
 degreesSwitch.addEventListener('input', chooseTempScale);
+dailyHourlySwitch.addEventListener('input', changeForecast);
 submitBtn.addEventListener('click', searchForCity);
+navDots.addEventListener('click', cycleHours);
+
 
 
 let scale = 'F';
 let data;
 
 initializePage();
+
+function cycleHours(e) {
+    if (e.target === leftArrow) {
+        if (dot1.classList.contains('filled-in')) {
+            dot1.classList.remove('filled-in');
+            dot3.classList.add('filled-in');
+            firstEightHoursDiv.style.display = 'none';
+            thirdEightHoursDiv.style.display = 'flex';
+        } else if (dot2.classList.contains('filled-in')) {
+            dot2.classList.remove('filled-in');
+            dot1.classList.add('filled-in');
+            secondEightHoursDiv.style.display = 'none';
+            firstEightHoursDiv.style.display = 'flex';
+        } else if (dot3.classList.contains('filled-in')) {
+            dot3.classList.remove('filled-in');
+            dot2.classList.add('filled-in');
+            thirdEightHoursDiv.style.display = 'none';
+            secondEightHoursDiv.style.display = 'flex';
+        }
+    } else if (e.target === rightArrow) {
+        if (dot1.classList.contains('filled-in')) {
+            dot1.classList.remove('filled-in');
+            dot2.classList.add('filled-in');
+            firstEightHoursDiv.style.display = 'none';
+            secondEightHoursDiv.style.display = 'flex';
+        } else if (dot2.classList.contains('filled-in')) {
+            dot2.classList.remove('filled-in');
+            dot3.classList.add('filled-in');
+            secondEightHoursDiv.style.display = 'none';
+            thirdEightHoursDiv.style.display = 'flex';
+        } else if (dot3.classList.contains('filled-in')) {
+            dot3.classList.remove('filled-in');
+            dot1.classList.add('filled-in');
+            thirdEightHoursDiv.style.display = 'none';
+            firstEightHoursDiv.style.display = 'flex';
+        }
+    } else if (e.target === dot1) {
+        dot1.classList.add('filled-in');
+        dot2.classList.remove('filled-in');
+        dot3.classList.remove('filled-in');
+        firstEightHoursDiv.style.display = 'flex';
+        secondEightHoursDiv.style.display = 'none';
+        thirdEightHoursDiv.style.display = 'none';
+    } else if (e.target === dot2) {
+        dot2.classList.add('filled-in');
+        dot1.classList.remove('filled-in');
+        dot3.classList.remove('filled-in');
+        firstEightHoursDiv.style.display = 'none';
+        secondEightHoursDiv.style.display = 'flex';
+        thirdEightHoursDiv.style.display = 'none';
+    } else if (e.target === dot3) {
+        dot3.classList.add('filled-in');
+        dot1.classList.remove('filled-in');
+        dot2.classList.remove('filled-in');
+        firstEightHoursDiv.style.display = 'none';
+        secondEightHoursDiv.style.display = 'none';
+        thirdEightHoursDiv.style.display = 'flex';
+    }
+}
+
+function changeForecast() {
+    if (dailyHourlySwitch.checked === true) {
+        dailyForecastDiv.style.display = 'none';
+        firstEightHoursDiv.style.display = 'flex';
+        secondEightHoursDiv.style.display = 'none';
+        thirdEightHoursDiv.style.display = 'none';
+        navDots.style.display = 'flex';
+        dot1.classList.add('filled-in');
+        dot2.classList.remove('filled-in');
+        dot3.classList.remove('filled-in');
+
+    } else {
+        dailyForecastDiv.style.display = 'flex';
+        firstEightHoursDiv.style.display = 'none';
+        secondEightHoursDiv.style.display = 'none';
+        thirdEightHoursDiv.style.display = 'none';
+        navDots.style.display = 'none';
+    }
+}
 
 function chooseTempScale(e) {
     if (e.currentTarget.checked === false) {
@@ -68,11 +163,11 @@ function renderText(data) {
     currentWindSpeed.textContent = data.currentWindSpeed + ' mph';
     precipitationNextHour.textContent = data.precipitationNextHour + ' %';
 
-    const dailyForecastDiv = document.querySelector('.daily-forecast');
-    const hourlyForecastDiv = document.querySelector('.hourly-forecast');
+    
     data.dailyData.forEach((day, index) => {
         if (dailyForecastDiv.children.length >= 0 && dailyForecastDiv.children.length <= 6) {
             const singleDay = document.createElement('div');
+            singleDay.classList = `singleDay day${index}`;
             const nameOfDayDiv = document.createElement('div');
             let nameOfDay;
             if (new Date(day.dayTime * 1000).getDate() === new Date().getDate()) {
@@ -117,8 +212,9 @@ function renderText(data) {
         } 
     });
     data.hourlyData.forEach((hour, index) => {
-        if (hourlyForecastDiv.children.length >= 0 && hourlyForecastDiv.children.length <= 24) {
+        if ((firstEightHoursDiv.children.length >= 0 && firstEightHoursDiv.children.length <= 7) || (secondEightHoursDiv.children.length >= 0 && secondEightHoursDiv.children.length <= 7) || (thirdEightHoursDiv.children.length >= 0 && thirdEightHoursDiv.children.length <= 7)) {
             const singleHour = document.createElement('div');
+            singleHour.className = `singleHour hour${index}`;
             const time = document.createElement('div');
             time.className = `time hour${index}`;
             const timeValue = new Date(hour.hourTime * 1000).toLocaleTimeString(undefined, { hour: 'numeric', hour12: true, });
@@ -131,10 +227,25 @@ function renderText(data) {
             icon.src = `http://openweathermap.org/img/wn/${hour.iconId}@2x.png`;
             icon.className = `icon hour${index}`;
             singleHour.append(time, temp, icon);
-            hourlyForecastDiv.append(singleHour);
-
+            if (index < 8) {
+                firstEightHoursDiv.append(singleHour);
+            } else if (index >=8 && index <=15) {
+                secondEightHoursDiv.append(singleHour);
+            } else if (index > 15 && index <= 23) {
+                thirdEightHoursDiv.append(singleHour);
+            }
+        } else {
+            const time = document.getElementsByClassName(`time hour${index}`)[0];
+            const temp = document.getElementsByClassName(`temp hour${index}`)[0];
+            const icon = document.getElementsByClassName(`icon hour${index}`)[0];
+            const timeValue = new Date(hour.hourTime * 1000).toLocaleTimeString(undefined, { hour: 'numeric', hour12: true, });
+            time.textContent = timeValue;
+            const tempValue = convertTempToChosenScaleAndRound(hour.hourTemp);
+            temp.textContent = tempValue + ' ' + degrees;
+            icon.src = `http://openweathermap.org/img/wn/${hour.iconId}@2x.png`;
         }
     });
+    // hideDiv();
 }
 
 function renderCurrentWeatherImg(data) {

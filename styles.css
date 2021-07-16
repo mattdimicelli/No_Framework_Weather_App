@@ -1,6 +1,7 @@
 
 /* The slider switch to change degrees unit */
-.degrees-switch {
+.degrees-switch,
+.daily-hourly-switch {
     position: relative;
     display: inline-block;
     width: 60px;
@@ -8,7 +9,8 @@
 }
 
 /* Hide default HTML checkbox styles */
-.degrees-switch input {
+.degrees-switch input,
+.daily-hourly-switch input {
     opacity: 0;
     width: 0;
     height: 0;
@@ -92,11 +94,6 @@ header {
     justify-content: space-between;
 }
 
-.daily-forecast {
-    display: flex;
-    justify-content: space-around;
-}
-
 .nameOfDay {
     font-size: 2rem;
 }
@@ -108,3 +105,105 @@ header {
 .minTemp {
     font-size: 1.3rem;
 }
+
+
+.dot {
+    border: 1px solid black;
+    border-radius: 100%;
+    height: 10px;
+    width: 10px;
+    background-color: transparent;
+}
+
+.forecast-buttons {
+    display: flex;
+    align-items: center;
+}
+
+.daily {
+    margin-right: 0.5rem;
+}
+
+.hourly {
+    margin-left: 0.5rem;
+}
+
+.navigation-dots {
+    display: none;
+    width: 120px;
+    justify-content: space-between;
+    align-items: center;
+    margin-left: 2rem;
+}
+
+.arrow {
+    font-size: 2.5rem;
+}
+
+.daily-forecast {
+    display: flex;
+    justify-content: space-between;
+    width: 90%;
+    margin: 0 auto;
+}
+
+.singleHour, .singleDay {
+    height: 200px;
+    width: 12.5%;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: space-around;
+
+}
+
+.first-eight-hours,
+.second-eight-hours,
+.third-eight-hours {
+    display: none;
+    width: 90%;
+    margin: 0 auto;
+    justify-content: space-between;
+}
+
+.time {
+    font-size: 1.3rem;
+}
+
+.temp {
+    font-size: 2rem;
+}
+
+.filled-in {
+    background-color: black;
+}
+
+body {
+    display: flex;
+    flex-direction: column;
+    justify-content: space-around;
+    height: 100vh;
+    background-color: lightblue;
+}
+
+.forecast {
+    margin-bottom: 4rem;
+}
+
+.forecast-buttons, 
+header,
+.current-weather {
+    margin-left: 1rem;
+    margin-right: 1rem;
+}
+
+
+
+
+
+
+
+
+
+
+
