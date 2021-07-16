@@ -183,7 +183,8 @@ body {
     flex-direction: column;
     justify-content: space-around;
     height: 100vh;
-    background-color: lightblue;
+   background-image: url('./sky.jpeg');
+   background-size: cover;
 }
 
 .forecast {
@@ -195,6 +196,10 @@ header,
 .current-weather {
     margin-left: 1rem;
     margin-right: 1rem;
+}
+
+.giphy {
+    place-self: flex-end;
 }
 
 

@@ -296,7 +296,7 @@ function makeUsefulWeatherDataObj(dataCurrentWeather, dataHourlyAndDaily) {
 }
 
 async function getWeatherImg(weatherDescription) {
-    const response = await fetch(`https://api.giphy.com/v1/gifs/translate?api_key=yAhCNvI0f6znmTUpEGMtSmH48m1iAzKU&s=${weatherDescription}`, { mode: 'cors'} );
+    const response = await fetch(`https://api.giphy.com/v1/gifs/translate?api_key=yAhCNvI0f6znmTUpEGMtSmH48m1iAzKU&s=${weatherDescription}&weirdness=1`, { mode: 'cors'} );
     const json = await response.json();
     const gifObj = json.data;
     console.log(gifObj);
