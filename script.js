@@ -245,7 +245,7 @@ function renderText(data) {
             icon.src = `http://openweathermap.org/img/wn/${hour.iconId}@2x.png`;
         }
     });
-    // hideDiv();
+  
 }
 
 function renderCurrentWeatherImg(data) {
