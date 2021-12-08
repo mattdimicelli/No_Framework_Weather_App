@@ -25,15 +25,10 @@ const precipitationNextHour = document.querySelector('.precipitation-next-hour >
 
 
 
-degreesSwitch.addEventListener('input', chooseTempScale);
 dailyHourlySwitch.addEventListener('input', changeForecast);
 submitBtn.addEventListener('click', searchForCity);
 navDots.addEventListener('click', cycleHours);
 
-
-
-let scale = 'F';
-let data;
 
 initializePage();
 
@@ -108,16 +103,6 @@ function changeForecast() {
     }
 }
 
-function chooseTempScale(e) {
-    const degreesSwitch = e.currentTarget;
-    if (degreesSwitch.checked === false) {
-        scale = 'F';
-    } else {
-        scale = 'C';
-    }
-
-    if (data) data.then(renderText);  // what is this?
-}
 
 function initializePage() {
     getForecast('New York');
@@ -129,106 +114,123 @@ function searchForCity(e) {
 }
 
 function getForecast(city) {
-    data = getWeatherDataForCity(city).then(data => {
+    getCityWeather(city).then(data => {                  
         renderText(data);
         renderCurrentWeatherImg(data);
         return data;
     }).catch(err => console.error(err));
 }
 
-
-
 function renderText(data) {
-    const dateOptions = { dateStyle: 'full', timeStyle: 'short' };
-
-    const tempValue = convertTempToChosenScaleAndRound(data.currentTemperature);
-    const feelsLikeValue = convertTempToChosenScaleAndRound(data.feelsLike);
-    const degrees = '°' + scale; 
+    const degrees = '°' + (degreesSwitch.checked ? 'C' : 'F') ;
+    degreesSwitch.addEventListener('input', updateTempScale);  /* updateTempScale()
+    affects the rendering of the text, so this event listener belongs here*/
 
     renderCurrentWeatherText(); 
+    renderDailyWeatherText();
+    renderHourlyWeatherText();
+
+    function renderDailyWeatherText() {
+        data.dailyData.forEach((day, index) => {
+            let nameOfDayDiv;
+            let maxTemp;
+            let minTemp;
+            let icon;
+            let singleDay;
+            if (dailyForecastDiv.children.length >= 0 && dailyForecastDiv.children.length <= 6) {
+                /* This block is for the initial daily forecast loaded by the 
+                app, which is for New York. */
+                singleDay = document.createElement('div');
+                singleDay.classList = `singleDay day${index}`;
+                nameOfDayDiv = document.createElement('div');
+                nameOfDayDiv.className = `nameOfDay day${index}`;
+                maxTemp = document.createElement('div');
+                maxTemp.className = `maxTemp day${index}`;
+                minTemp = document.createElement('div');
+                minTemp.className = `minTemp day${index}`;
+                icon = document.createElement('img');
+                icon.className = `icon day${index}`;
+            } else {
+                /* This block is for every daily forecast loaded (for any city searched)
+                for by the user */
+                maxTemp = document.querySelector(`.maxTemp.day${index}`);
+                minTemp = document.querySelector(`.minTemp.day${index}`);
+                nameOfDayDiv = document.querySelector(`.nameOfDay.day${index}`);
+                icon = document.querySelector(`.icon.day${index}`);
+            }
+
+            let nameOfDay;
+            if (new Date(day.dayTime * 1000).getDate() === new Date().getDate()) {
+                nameOfDay = 'Today';
+            } else {
+                nameOfDay = new Date(day.dayTime * 1000).toLocaleDateString(undefined, { weekday: 'long' });
+            }
+            nameOfDayDiv.textContent = nameOfDay;
+            const dailyMaxTempValue = convertTempToChosenScaleAndRound(day.maxTemp);
+            maxTemp.textContent = dailyMaxTempValue + ' ' + degrees;
+            const dailyMinTempValue = convertTempToChosenScaleAndRound(day.minTemp);
+            minTemp.textContent = dailyMinTempValue + ' ' + degrees;
+            icon.src = `http://openweathermap.org/img/wn/${day.iconId}@2x.png`;
+
+            if (dailyForecastDiv.children.length >= 0 && dailyForecastDiv.children.length <= 6) {
+                // Only for initially-loaded New York daily forecast
+                singleDay.append(nameOfDayDiv, maxTemp, minTemp, icon);
+                dailyForecastDiv.append(singleDay);
+            }    
+        });
+    }
+
+    function renderHourlyWeatherText() {
+        data.hourlyData.forEach((hour, index) => {
+            let singleHour;
+            let time;
+            let timeValue;
+            let temp;
+            let tempValue;
+            let icon;
+            if ((firstEightHoursDiv.children.length >= 0 && firstEightHoursDiv.children.length <= 7) || (secondEightHoursDiv.children.length >= 0 && secondEightHoursDiv.children.length <= 7) || (thirdEightHoursDiv.children.length >= 0 && thirdEightHoursDiv.children.length <= 7)) {
+                /* This block is for the initial hourly forecast loaded by the 
+                app, which is for New York. */
+                singleHour = document.createElement('div');
+                singleHour.className = `singleHour hour${index}`;
+                time = document.createElement('div');
+                time.className = `time hour${index}`;
+                temp = document.createElement('div');
+                temp.className = `temp hour${index}`;
+                icon = document.createElement('img');
+                icon.className = `icon hour${index}`;
+            } else {
+                /* This block is for every daily forecast loaded (for any city searched)
+                for by the user */
+                time = document.querySelector(`.time.hour${index}`);
+                temp = document.querySelector(`.temp.hour${index}`);
+                icon = document.querySelector(`.icon.hour${index}`);
+            }
+
+            timeValue = new Date(hour.hourTime * 1000).toLocaleTimeString(undefined, { hour: 'numeric', hour12: true, });
+            time.textContent = timeValue;
+            tempValue = convertTempToChosenScaleAndRound(hour.hourTemp);
+            temp.textContent = tempValue + ' ' + degrees;
+            icon.src = `http://openweathermap.org/img/wn/${hour.iconId}@2x.png`;
+
+            if ((firstEightHoursDiv.children.length >= 0 && firstEightHoursDiv.children.length <= 7) || (secondEightHoursDiv.children.length >= 0 && secondEightHoursDiv.children.length <= 7) || (thirdEightHoursDiv.children.length >= 0 && thirdEightHoursDiv.children.length <= 7)) {
+                // Only for initially-loaded New York hourly forecast
+                singleHour.append(time, temp, icon);
+                if (index < 8) {
+                    firstEightHoursDiv.append(singleHour);
+                } else if (index >=8 && index <=15) {
+                    secondEightHoursDiv.append(singleHour);
+                } else if (index > 15 && index <= 23) {
+                    thirdEightHoursDiv.append(singleHour);
+                }
+            }
+        });
+    }
     
-    data.dailyData.forEach((day, index) => {
-        if (dailyForecastDiv.children.length >= 0 && dailyForecastDiv.children.length <= 6) {
-            const singleDay = document.createElement('div');
-            singleDay.classList = `singleDay day${index}`;
-            const nameOfDayDiv = document.createElement('div');
-            let nameOfDay;
-            if (new Date(day.dayTime * 1000).getDate() === new Date().getDate()) {
-                nameOfDay = 'Today';
-            } else {
-                nameOfDay = new Date(day.dayTime * 1000).toLocaleDateString(undefined, { weekday: 'long' });
-            }
-            nameOfDayDiv.textContent = nameOfDay;
-            nameOfDayDiv.className = `nameOfDay day${index}`;
-            const maxTemp = document.createElement('div');
-            const dailyMaxTempValue = convertTempToChosenScaleAndRound(day.maxTemp);
-            maxTemp.textContent = dailyMaxTempValue + ' ' + degrees;
-            maxTemp.className = `maxTemp day${index}`;
-            const minTemp = document.createElement('div');
-            const dailyMinTempValue = convertTempToChosenScaleAndRound(day.minTemp);
-            minTemp.textContent = dailyMinTempValue + ' ' + degrees;
-            minTemp.className = `minTemp day${index}`;
-            const icon = document.createElement('img');
-            icon.src = `http://openweathermap.org/img/wn/${day.iconId}@2x.png`;
-            icon.className = `icon day${index}`;
-            singleDay.append(nameOfDayDiv, maxTemp, minTemp, icon);
-            dailyForecastDiv.append(singleDay);
-        } else {
-            const maxTemp = document.getElementsByClassName(`maxTemp day${index}`)[0];
-            const dailyMaxTempValue = convertTempToChosenScaleAndRound(day.maxTemp);
-            maxTemp.textContent = dailyMaxTempValue + ' ' + degrees;
-            const minTemp = document.getElementsByClassName(`minTemp day${index}`)[0];
-            const dailyMinTempValue = convertTempToChosenScaleAndRound(day.minTemp);
-            minTemp.textContent = dailyMinTempValue + ' ' + degrees;
-            let nameOfDay;
-            if (new Date(day.dayTime * 1000).getDate() === new Date().getDate()) {
-                nameOfDay = 'Today';
-            } else {
-                nameOfDay = new Date(day.dayTime * 1000).toLocaleDateString(undefined, { weekday: 'long' });
-            }           
-            const nameOfDayDiv = document.getElementsByClassName(`nameOfDay day${index}`)[0];
-            nameOfDayDiv.textContent = nameOfDay;
-            nameOfDayDiv.className = `nameOfDay day${index}`;
-            const icon = document.getElementsByClassName(`icon day${index}`)[0];
-            icon.src = `http://openweathermap.org/img/wn/${day.iconId}@2x.png`;
-            icon.className = `icon day${index}`;
-        } 
-    });
-    data.hourlyData.forEach((hour, index) => {
-        if ((firstEightHoursDiv.children.length >= 0 && firstEightHoursDiv.children.length <= 7) || (secondEightHoursDiv.children.length >= 0 && secondEightHoursDiv.children.length <= 7) || (thirdEightHoursDiv.children.length >= 0 && thirdEightHoursDiv.children.length <= 7)) {
-            const singleHour = document.createElement('div');
-            singleHour.className = `singleHour hour${index}`;
-            const time = document.createElement('div');
-            time.className = `time hour${index}`;
-            const timeValue = new Date(hour.hourTime * 1000).toLocaleTimeString(undefined, { hour: 'numeric', hour12: true, });
-            time.textContent = timeValue;
-            const temp = document.createElement('div');
-            temp.className = `temp hour${index}`;
-            const tempValue = convertTempToChosenScaleAndRound(hour.hourTemp);
-            temp.textContent = tempValue + ' ' + degrees;
-            const icon = document.createElement('img');
-            icon.src = `http://openweathermap.org/img/wn/${hour.iconId}@2x.png`;
-            icon.className = `icon hour${index}`;
-            singleHour.append(time, temp, icon);
-            if (index < 8) {
-                firstEightHoursDiv.append(singleHour);
-            } else if (index >=8 && index <=15) {
-                secondEightHoursDiv.append(singleHour);
-            } else if (index > 15 && index <= 23) {
-                thirdEightHoursDiv.append(singleHour);
-            }
-        } else {
-            const time = document.getElementsByClassName(`time hour${index}`)[0];
-            const temp = document.getElementsByClassName(`temp hour${index}`)[0];
-            const icon = document.getElementsByClassName(`icon hour${index}`)[0];
-            const timeValue = new Date(hour.hourTime * 1000).toLocaleTimeString(undefined, { hour: 'numeric', hour12: true, });
-            time.textContent = timeValue;
-            const tempValue = convertTempToChosenScaleAndRound(hour.hourTemp);
-            temp.textContent = tempValue + ' ' + degrees;
-            icon.src = `http://openweathermap.org/img/wn/${hour.iconId}@2x.png`;
-        }
-    });
     function renderCurrentWeatherText() {
+        const dateOptions = { dateStyle: 'full', timeStyle: 'short' };
+        const tempValue = convertTempToChosenScaleAndRound(data.currentTemperature);
+        const feelsLikeValue = convertTempToChosenScaleAndRound(data.feelsLike);
         city.textContent = data.city;
         dataTime.textContent = new Date(data.utcTimeOfData * 1000).toLocaleString(undefined, dateOptions);
         currentTemp.textContent = tempValue + ' ' + degrees;
@@ -238,30 +240,38 @@ function renderText(data) {
         windSpeed.textContent = data.windSpeed + ' mph';
         precipitationNextHour.textContent = data.precipitationNextHour + ' %';
     }
+
+    function updateTempScale() {
+        renderText(data);                             
+    }
 }
 
 function renderCurrentWeatherImg(data) {
     const currentImg = document.querySelector('.current-img');
-    getWeatherImg(data.currentWeatherCategory).then(url => currentImg.src = url);
+    getWeatherImg(data.currentWeatherCategory).then(data => {
+        currentImg.src = data.url;
+        currentImg.alt = data.title;
+    }); 
 }
 
 function convertTempToChosenScaleAndRound(value) {
-    // The API request fetches the temp values in  F, so only need to calculate C
-    return scale === 'F' ? Math.round(value) : Math.round(Number(((value - 32) * (5/9)).toFixed(2)));
+    // The API request fetches the temp values in  F, so only need to calculate 
+    return degreesSwitch.checked ? Math.round(Number(((value - 32) * (5/9)).toFixed(2)))
+        : Math.round(value);
 }
 
-async function getWeatherDataForCity(city) {
+async function getCityWeather(city) {
 
     const responseCurrentWeather = await fetch(`https://api.openweathermap.org/data/2.5/weather?q=${city}&units=imperial&appid=72e691cc8e68804d3b51462e3f5c963f`, { mode: 'cors' });
-    const dataCurrentWeather = await responseCurrentWeather.json();
+    const dataCurrent = await responseCurrentWeather.json();
 
-    const longitude = dataCurrentWeather.coord.lon;
-    const latitude = dataCurrentWeather.coord.lat;
+    const longitude = dataCurrent.coord.lon;
+    const latitude = dataCurrent.coord.lat;
 
     const responseHourlyAndDaily = await fetch(`https://api.openweathermap.org/data/2.5/onecall?lat=${latitude}&lon=${longitude}&units=imperial&exclude=current,minutely,alerts&appid=72e691cc8e68804d3b51462e3f5c963f`, { mode: 'cors' });
     const dataHourlyAndDaily = await responseHourlyAndDaily.json();
     
-    const dataObj = makeUsefulWeatherDataObj(dataCurrentWeather, dataHourlyAndDaily);
+    const dataObj = makeUsefulWeatherDataObj(dataCurrent, dataHourlyAndDaily);
    
     return dataObj;
 }
@@ -290,10 +300,9 @@ function makeUsefulWeatherDataObj(dataCurrentWeather, dataHourlyAndDaily) {
 
 async function getWeatherImg(weatherCategory) {
     const response = await fetch(`https://api.giphy.com/v1/gifs/translate?api_key=yAhCNvI0f6znmTUpEGMtSmH48m1iAzKU&s=${weatherCategory}`, { mode: 'cors'} );
-    const json = await response.json();
-    const gifObj = json.data;
-    console.log(gifObj);
-    return gifObj.images.fixed_height.url;
+    const data = await response.json();
+    const gifObj = data.data;
+    return { url: gifObj.images.fixed_height.url, title: gifObj.title };
 }
 
 
