@@ -69,7 +69,7 @@ input:checked + .slider:before {
     margin-bottom: 1rem;
 }
 
-.current-description { 
+.description { 
     font-size: 2.5rem;
 }
 
@@ -85,7 +85,7 @@ input:checked + .slider:before {
     font-size: 2rem;
 }
 
-.current-city-name {
+.city {
     font-size: 2rem;
 }
 
@@ -183,8 +183,9 @@ body {
     flex-direction: column;
     justify-content: space-around;
     height: 100vh;
-   background-image: url('./sky.jpeg');
+   background-image: url('./images/sky2.jpeg');
    background-size: cover;
+   font-family: sans-serif;
 }
 
 .forecast {

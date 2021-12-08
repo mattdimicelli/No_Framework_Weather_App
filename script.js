@@ -1,7 +1,7 @@
 'use strict';
 
-const cityNameInput = document.querySelector('#cityName');
-const submitBtn = document.querySelector('#cityName + button');
+const cityInput = document.querySelector('#city');
+const submitBtn = document.querySelector('#city + button');
 const degreesSwitch = document.querySelector('.degrees-switch input');
 const dailyHourlySwitch = document.querySelector('.daily-hourly-switch input');
 const dailyForecastDiv = document.querySelector('.daily-forecast');
@@ -14,6 +14,14 @@ const navDots = document.querySelector('.navigation-dots');
 const dot1 = document.querySelector('.dot1');
 const dot2 = document.querySelector('.dot2');
 const dot3 = document.querySelector('.dot3');
+const city = document.querySelector('.city > div');
+const dataTime = document.querySelector('.data-time > div');
+const currentTemp = document.querySelector('.current-temp > div');
+const description = document.querySelector('.description > div');
+const humidity = document.querySelector('.humidity > div');
+const feelsLike = document.querySelector('.feels-like > div');
+const windSpeed = document.querySelector('.wind-speed > div');
+const precipitationNextHour = document.querySelector('.precipitation-next-hour > div');
 
 
 
@@ -32,53 +40,36 @@ initializePage();
 function cycleHours(e) {
     if (e.target === leftArrow) {
         if (dot1.classList.contains('filled-in')) {
-            dot1.classList.remove('filled-in');
-            dot3.classList.add('filled-in');
-            firstEightHoursDiv.style.display = 'none';
-            thirdEightHoursDiv.style.display = 'flex';
+            fillDot3();
         } else if (dot2.classList.contains('filled-in')) {
-            dot2.classList.remove('filled-in');
-            dot1.classList.add('filled-in');
-            secondEightHoursDiv.style.display = 'none';
-            firstEightHoursDiv.style.display = 'flex';
+            fillDot1();
         } else if (dot3.classList.contains('filled-in')) {
-            dot3.classList.remove('filled-in');
-            dot2.classList.add('filled-in');
-            thirdEightHoursDiv.style.display = 'none';
-            secondEightHoursDiv.style.display = 'flex';
+            fillDot2();
         }
     } else if (e.target === rightArrow) {
         if (dot1.classList.contains('filled-in')) {
-            dot1.classList.remove('filled-in');
-            dot2.classList.add('filled-in');
-            firstEightHoursDiv.style.display = 'none';
-            secondEightHoursDiv.style.display = 'flex';
+            fillDot2();
         } else if (dot2.classList.contains('filled-in')) {
-            dot2.classList.remove('filled-in');
-            dot3.classList.add('filled-in');
-            secondEightHoursDiv.style.display = 'none';
-            thirdEightHoursDiv.style.display = 'flex';
+            fillDot3();
         } else if (dot3.classList.contains('filled-in')) {
-            dot3.classList.remove('filled-in');
-            dot1.classList.add('filled-in');
-            thirdEightHoursDiv.style.display = 'none';
-            firstEightHoursDiv.style.display = 'flex';
+            fillDot1();
         }
     } else if (e.target === dot1) {
-        dot1.classList.add('filled-in');
-        dot2.classList.remove('filled-in');
-        dot3.classList.remove('filled-in');
-        firstEightHoursDiv.style.display = 'flex';
-        secondEightHoursDiv.style.display = 'none';
-        thirdEightHoursDiv.style.display = 'none';
+        fillDot1();
     } else if (e.target === dot2) {
+        fillDot2();
+    } else if (e.target === dot3) {
+        fillDot3();
+    }
+    function fillDot2() {
         dot2.classList.add('filled-in');
         dot1.classList.remove('filled-in');
         dot3.classList.remove('filled-in');
         firstEightHoursDiv.style.display = 'none';
         secondEightHoursDiv.style.display = 'flex';
         thirdEightHoursDiv.style.display = 'none';
-    } else if (e.target === dot3) {
+    }
+    function fillDot3() {
         dot3.classList.add('filled-in');
         dot1.classList.remove('filled-in');
         dot2.classList.remove('filled-in');
@@ -88,18 +79,27 @@ function cycleHours(e) {
     }
 }
 
+function fillDot1() {
+    dot1.classList.add('filled-in');
+    dot2.classList.remove('filled-in');
+    dot3.classList.remove('filled-in');
+    firstEightHoursDiv.style.display = 'flex';
+    secondEightHoursDiv.style.display = 'none';
+    thirdEightHoursDiv.style.display = 'none';
+}
+
 function changeForecast() {
     if (dailyHourlySwitch.checked === true) {
-        dailyForecastDiv.style.display = 'none';
-        firstEightHoursDiv.style.display = 'flex';
-        secondEightHoursDiv.style.display = 'none';
-        thirdEightHoursDiv.style.display = 'none';
-        navDots.style.display = 'flex';
-        dot1.classList.add('filled-in');
-        dot2.classList.remove('filled-in');
-        dot3.classList.remove('filled-in');
-
+        show8HourForecast();
     } else {
+        showDailyForecast();
+    }
+    function show8HourForecast() {
+        dailyForecastDiv.style.display = 'none';
+        navDots.style.display = 'flex';
+        fillDot1();
+    }
+    function showDailyForecast() {
         dailyForecastDiv.style.display = 'flex';
         firstEightHoursDiv.style.display = 'none';
         secondEightHoursDiv.style.display = 'none';
@@ -109,26 +109,27 @@ function changeForecast() {
 }
 
 function chooseTempScale(e) {
-    if (e.currentTarget.checked === false) {
+    const degreesSwitch = e.currentTarget;
+    if (degreesSwitch.checked === false) {
         scale = 'F';
     } else {
         scale = 'C';
     }
 
-    if (data) data.then(renderText);
+    if (data) data.then(renderText);  // what is this?
 }
 
 function initializePage() {
-    data = getWeatherDataForCity('New York').then(data => {
-        renderText(data);
-        renderCurrentWeatherImg(data);
-        return data;
-    }).catch(err => console.error(err));
+    getForecast('New York');
 }
 
 function searchForCity(e) {
     e.preventDefault();
-    data = getWeatherDataForCity(cityNameInput.value).then(data => {
+    getForecast(cityInput.value);
+}
+
+function getForecast(city) {
+    data = getWeatherDataForCity(city).then(data => {
         renderText(data);
         renderCurrentWeatherImg(data);
         return data;
@@ -138,31 +139,13 @@ function searchForCity(e) {
 
 
 function renderText(data) {
-    const cityName = document.querySelector('.current-city-name > div');
-    const currentDataTime = document.querySelector('.current-data-time > div');
-    const currentTemp = document.querySelector('.current-temp > div');
-    const currentDescription = document.querySelector('.current-description > div');
-    const currentHumidity = document.querySelector('.current-humidity > div');
-    const currentFeelsLike = document.querySelector('.current-feels-like > div');
-    const currentWindSpeed = document.querySelector('.current-wind-speed > div');
-    const precipitationNextHour = document.querySelector('.precipitation-next-hour > div');
-    
     const dateOptions = { dateStyle: 'full', timeStyle: 'short' };
 
-    // The API request fetches the temp values in  F, so only need to calculate C
-    const currentTempValue = convertTempToChosenScaleAndRound(data.currentTemperature);
-    const currentFeelsLikeValue = convertTempToChosenScaleAndRound(data.currentFeelsLike);
+    const tempValue = convertTempToChosenScaleAndRound(data.currentTemperature);
+    const feelsLikeValue = convertTempToChosenScaleAndRound(data.feelsLike);
     const degrees = '°' + scale; 
 
-    cityName.textContent = data.cityName;
-    currentDataTime.textContent = new Date(data.utcTimeOfData * 1000).toLocaleString(undefined, dateOptions);
-    currentTemp.textContent = currentTempValue + ' ' + degrees;
-    currentDescription.textContent = data.currentDescription.includes(' ') ? data.currentDescription.split(' ').map(word => word[0].toUpperCase() + word.slice(1)).join(' ') : data.currentDescription[0].toUpperCase() + data.currentDescription.slice(1);
-    currentHumidity.textContent = data.currentHumidity + ' %';
-    currentFeelsLike.textContent = currentFeelsLikeValue + ' ' + degrees;
-    currentWindSpeed.textContent = data.currentWindSpeed + ' mph';
-    precipitationNextHour.textContent = data.precipitationNextHour + ' %';
-
+    renderCurrentWeatherText(); 
     
     data.dailyData.forEach((day, index) => {
         if (dailyForecastDiv.children.length >= 0 && dailyForecastDiv.children.length <= 6) {
@@ -245,21 +228,31 @@ function renderText(data) {
             icon.src = `http://openweathermap.org/img/wn/${hour.iconId}@2x.png`;
         }
     });
-  
+    function renderCurrentWeatherText() {
+        city.textContent = data.city;
+        dataTime.textContent = new Date(data.utcTimeOfData * 1000).toLocaleString(undefined, dateOptions);
+        currentTemp.textContent = tempValue + ' ' + degrees;
+        description.textContent = data.description.includes(' ') ? data.description.split(' ').map(word => word[0].toUpperCase() + word.slice(1)).join(' ') : data.description[0].toUpperCase() + data.description.slice(1);
+        humidity.textContent = data.humidity + ' %';
+        feelsLike.textContent = feelsLikeValue + ' ' + degrees;
+        windSpeed.textContent = data.windSpeed + ' mph';
+        precipitationNextHour.textContent = data.precipitationNextHour + ' %';
+    }
 }
 
 function renderCurrentWeatherImg(data) {
     const currentImg = document.querySelector('.current-img');
-    getWeatherImg(data.currentDescription).then(url => currentImg.src = url);
+    getWeatherImg(data.currentWeatherCategory).then(url => currentImg.src = url);
 }
 
 function convertTempToChosenScaleAndRound(value) {
+    // The API request fetches the temp values in  F, so only need to calculate C
     return scale === 'F' ? Math.round(value) : Math.round(Number(((value - 32) * (5/9)).toFixed(2)));
 }
 
-async function getWeatherDataForCity(cityName) {
+async function getWeatherDataForCity(city) {
 
-    const responseCurrentWeather = await fetch(`https://api.openweathermap.org/data/2.5/weather?q=${cityName}&units=imperial&appid=72e691cc8e68804d3b51462e3f5c963f`, { mode: 'cors' });
+    const responseCurrentWeather = await fetch(`https://api.openweathermap.org/data/2.5/weather?q=${city}&units=imperial&appid=72e691cc8e68804d3b51462e3f5c963f`, { mode: 'cors' });
     const dataCurrentWeather = await responseCurrentWeather.json();
 
     const longitude = dataCurrentWeather.coord.lon;
@@ -278,13 +271,13 @@ function makeUsefulWeatherDataObj(dataCurrentWeather, dataHourlyAndDaily) {
 
     return {
         currentTemperature: dataCurrentWeather.main.temp,
-        currentFeelsLike: dataCurrentWeather.main.feels_like,
-        currentHumidity: dataCurrentWeather.main.humidity,
-        currentWindSpeed: dataCurrentWeather.wind.speed,
+        feelsLike: dataCurrentWeather.main.feels_like,
+        humidity: dataCurrentWeather.main.humidity,
+        windSpeed: dataCurrentWeather.wind.speed,
         utcTimeOfData: dataCurrentWeather.dt,
         currentWeatherCategory: dataCurrentWeather.weather[0].main,
-        currentDescription: dataCurrentWeather.weather[0].description,
-        cityName: dataCurrentWeather.name,
+        description: dataCurrentWeather.weather[0].description,
+        city: dataCurrentWeather.name,
         dailyData: dataHourlyAndDaily.daily.slice(0,7).map(day => {
             return { iconId: day.weather[0].icon, maxTemp: day.temp.max, minTemp: day.temp.min, description: day.weather[0].description, category: day.weather[0].main, dayTime: day.dt};
         }),
@@ -295,8 +288,8 @@ function makeUsefulWeatherDataObj(dataCurrentWeather, dataHourlyAndDaily) {
     };
 }
 
-async function getWeatherImg(weatherDescription) {
-    const response = await fetch(`https://api.giphy.com/v1/gifs/translate?api_key=yAhCNvI0f6znmTUpEGMtSmH48m1iAzKU&s=${weatherDescription}&weirdness=1`, { mode: 'cors'} );
+async function getWeatherImg(weatherCategory) {
+    const response = await fetch(`https://api.giphy.com/v1/gifs/translate?api_key=yAhCNvI0f6znmTUpEGMtSmH48m1iAzKU&s=${weatherCategory}`, { mode: 'cors'} );
     const json = await response.json();
     const gifObj = json.data;
     console.log(gifObj);
