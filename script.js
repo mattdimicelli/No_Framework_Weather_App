@@ -141,21 +141,21 @@ function renderText(data) {
                 /* This block is for the initial daily forecast loaded by the 
                 app, which is for New York. */
                 singleDay = document.createElement('div');
-                singleDay.classList = `singleDay day${index}`;
+                singleDay.classList = `single-day day${index}`;
                 nameOfDayDiv = document.createElement('div');
-                nameOfDayDiv.className = `nameOfDay day${index}`;
+                nameOfDayDiv.className = `name-of-day day${index}`;
                 maxTemp = document.createElement('div');
-                maxTemp.className = `maxTemp day${index}`;
+                maxTemp.className = `max-temp day${index}`;
                 minTemp = document.createElement('div');
-                minTemp.className = `minTemp day${index}`;
+                minTemp.className = `min-temp day${index}`;
                 icon = document.createElement('img');
                 icon.className = `icon day${index}`;
             } else {
                 /* This block is for every daily forecast loaded (for any city searched)
                 for by the user */
-                maxTemp = document.querySelector(`.maxTemp.day${index}`);
-                minTemp = document.querySelector(`.minTemp.day${index}`);
-                nameOfDayDiv = document.querySelector(`.nameOfDay.day${index}`);
+                maxTemp = document.querySelector(`.max-temp.day${index}`);
+                minTemp = document.querySelector(`.min-temp.day${index}`);
+                nameOfDayDiv = document.querySelector(`.name-of-day.day${index}`);
                 icon = document.querySelector(`.icon.day${index}`);
             }
 
@@ -192,7 +192,7 @@ function renderText(data) {
                 /* This block is for the initial hourly forecast loaded by the 
                 app, which is for New York. */
                 singleHour = document.createElement('div');
-                singleHour.className = `singleHour hour${index}`;
+                singleHour.className = `single-hour hour${index}`;
                 time = document.createElement('div');
                 time.className = `time hour${index}`;
                 temp = document.createElement('div');
