@@ -1,4 +1,10 @@
 'use strict';
+import './styles.css';
+import {MDCSwitch} from '@material/switch/index';
+
+for (const el of document.querySelectorAll('.mdc-switch')) {
+  const switchControl = new MDCSwitch(el);
+}
 
 const cityInput = document.querySelector('#city');
 const submitBtn = document.querySelector('#city + button');
