@@ -248,7 +248,7 @@ function renderText(data) {
 
 
 function cycleHours(e) {
-    if (e.target === leftArrow) {
+    if (e.target === rightArrow) {
         if (dot1.classList.contains('filled-in')) {
             fillDot3();
         } else if (dot2.classList.contains('filled-in')) {
@@ -256,7 +256,7 @@ function cycleHours(e) {
         } else if (dot3.classList.contains('filled-in')) {
             fillDot2();
         }
-    } else if (e.target === rightArrow) {
+    } else if (e.target === leftArrow) {
         if (dot1.classList.contains('filled-in')) {
             fillDot2();
         } else if (dot2.classList.contains('filled-in')) {
@@ -310,7 +310,7 @@ function changeForecast() {
         fillDot1();
     }
     function showDailyForecast() {
-        dailyForecastDiv.style.display = 'block';
+        dailyForecastDiv.style.display = '';
         firstEightHoursDiv.style.display = 'none';
         secondEightHoursDiv.style.display = 'none';
         thirdEightHoursDiv.style.display = 'none';
