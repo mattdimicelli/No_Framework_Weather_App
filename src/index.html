@@ -9,77 +9,104 @@
     <script src="bundle.js" defer></script>
 </head>
 <body>
-    <button id="basic-switch" class="mdc-switch mdc-switch--unselected" type="button" role="switch" aria-checked="false">
-        <div class="mdc-switch__track"></div>
-        <div class="mdc-switch__handle-track">
-          <div class="mdc-switch__handle">
-            <div class="mdc-switch__shadow">
-              <div class="mdc-elevation-overlay"></div>
-            </div>
-            <div class="mdc-switch__ripple"></div>
-            <div class="mdc-switch__icons">
-              <svg class="mdc-switch__icon mdc-switch__icon--on" viewBox="0 0 24 24">
-                <path d="M19.69,5.23L8.96,15.96l-4.23-4.23L2.96,13.5l6,6L21.46,7L19.69,5.23z" />
-              </svg>
-              <svg class="mdc-switch__icon mdc-switch__icon--off" viewBox="0 0 24 24">
-                <path d="M20 13H4v-2h16v2z" />
-              </svg>
-            </div>
-          </div>
-        </div>
-      </button>
-      <label for="basic-switch">off/on</label>
     <header>
-        <form>
-            <input type="search" id="city" placeholder="Search Location..." />
-            <button>Get Forecast</button>
-        </form>
-        <div>
-            <span class="fahrenheit">°F</span>
-            <span class="degrees-switch">
-                <input type="checkbox">
-                <span class="slider round"></span>
-            </span>
-            <span class="celcius">°C</span>
+        <input type="search" class="city-input" placeholder="Enter city...">
+        <div class="row">
+          <button type="button" class="get-forecast-btn">Get Forecast</button>
+          <label>°F
+            <button class="mdc-switch mdc-switch--unselected degrees-switch" 
+            type="button" role="switch" aria-checked="false">
+                <div class="mdc-switch__track"></div>
+                <div class="mdc-switch__handle-track">
+                  <div class="mdc-switch__handle">
+                    <div class="mdc-switch__shadow">
+                      <div class="mdc-elevation-overlay"></div>
+                    </div>
+                    <div class="mdc-switch__ripple"></div>
+                    <div class="mdc-switch__icons">
+                      <svg class="mdc-switch__icon mdc-switch__icon--on" 
+                      viewBox="0 0 24 24">
+                        <path d="M19.69,5.23L8.96,15.96l-4.23-4.23L2.96,13.5l6,6L21.46,7L19.69,5.23z" />
+                      </svg>
+                      <svg class="mdc-switch__icon mdc-switch__icon--off" 
+                      viewBox="0 0 24 24">
+                        <path d="M20 13H4v-2h16v2z" />
+                      </svg>
+                    </div>
+                  </div>
+                </div>
+              </button>
+              °C
+          </label>
         </div>
     </header>
-    <div class="current-weather">
-        <div>
-            <div class="current description"><div></div></div>
-            <div class="current city"><div></div></div>
-            <div class="current data-time"><div></div></div>
-            <div class="current current-temp"><div></div></div>
-        </div>  
-        <img class="current-img" />
-        <div>
-            <div class="label current humidity">Current Humidity: <div class="value"></div></div>
-            <div class="label current feels-like">Feels Like: <div class="value"></div></div>
-            <div class="label current wind-speed">Wind Speed: <div class="value"></div></div>
-            <div class="label current precipitation-next-hour">Chance of Precipitation During Next Hour: <div class="value"></div></div>
-        </div>
-    </div>
-    <div class="forecast">
+    <main>
+      <section class="current-weather">
+          <div class="description"></div>
+          <div class="city"></div>
+          <div class="data-time"></div>
+          <div class="temp"></div>
+          <img class="gif">
+          <div class="humidity">Current Humidity:
+            <span class="humidity-value"></span>
+          </div>
+          <div class="feels-like">Feels Like:
+            <span class="feels-like-value"></span>
+          </div>
+          <div class="wind-speed">Wind Speed:
+            <span class="wind-speed-value"></span>
+          </div>
+          <div class="chance-precipitation">
+            Chance of Precipitation During Next Hour:
+              <span class="chance-precipitation-value"></span>
+          </div>
+      </section>
+    <section class="forecast">
         <div class="forecast-buttons">
-            <span class="daily">Daily</span>
-            <label class="daily-hourly-switch">
-                <input type="checkbox">
-                <span class="slider round"></span>
-            </label>
-            <span class="hourly">Hourly</span>
-            <div class="navigation-dots">
-                <div class="arrow left-arrow">&#x3C;</div>
-                <div class="dot dot1"></div>
-                <div class="dot dot2"></div>
-                <div class="dot dot3"></div>
-                <div class="arrow right-arrow">&#x3E;</div>
-            </div>
+          <label>Daily
+            <button class="mdc-switch mdc-switch--unselected daily-hourly-switch" 
+            type="button" role="switch" aria-checked="false">
+                <div class="mdc-switch__track"></div>
+                <div class="mdc-switch__handle-track">
+                  <div class="mdc-switch__handle">
+                    <div class="mdc-switch__shadow">
+                      <div class="mdc-elevation-overlay"></div>
+                    </div>
+                    <div class="mdc-switch__ripple"></div>
+                    <div class="mdc-switch__icons">
+                      <svg class="mdc-switch__icon mdc-switch__icon--on" 
+                      viewBox="0 0 24 24">
+                        <path d="M19.69,5.23L8.96,15.96l-4.23-4.23L2.96,13.5l6,6L21.46,7L19.69,5.23z" />
+                      </svg>
+                      <svg class="mdc-switch__icon mdc-switch__icon--off" 
+                      viewBox="0 0 24 24">
+                        <path d="M20 13H4v-2h16v2z" />
+                      </svg>
+                    </div>
+                  </div>
+                </div>
+              </button>
+          Hourly
+          </label>
+          <div class="navigation-dots">
+            <div class="arrow left-arrow">&#x3C;</div>
+            <div class="dot dot1"></div>
+            <div class="dot dot2"></div>
+            <div class="dot dot3"></div>
+            <div class="arrow right-arrow">&#x3E;</div>
+          </div>
         </div>
         <div class="daily-forecast"></div>
         <div class="first-eight-hours"></div>
         <div class="second-eight-hours"></div>
         <div class="third-eight-hours"></div>
-       
-    </div>
-    <img class='giphy' src="./images/PoweredBy_200_Horizontal_Light-Backgrounds_With_Logo.gif" />
+      </section>
+    </main>
+    <footer>
+      <img class="giphy"
+      src="./images/PoweredBy_200_Horizontal_Light-Backgrounds_With_Logo.gif"
+      alt="Giphy logo" 
+      >
+    </footer>
 </body>
 </html>
