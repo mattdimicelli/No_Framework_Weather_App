@@ -20,7 +20,7 @@ const dot2 = document.querySelector('.dot2');
 const dot3 = document.querySelector('.dot3');
 const city = document.querySelector('.city');
 const dataTime = document.querySelector('.data-time');
-const currentTemp = document.querySelector('.temp');
+const currentTemp = document.querySelector('.current-temp');
 const description = document.querySelector('.description');
 const humidity = document.querySelector('.humidity-value');
 const feelsLike = document.querySelector('.feels-like-value');
@@ -28,6 +28,7 @@ const windSpeed = document.querySelector('.wind-speed-value');
 const precipitationNextHour = document.querySelector('.chance-precipitation-value');
 
 const degreesSwitchAPI = new MDCSwitch(degreesSwitch);
+const dailyHourlySwitchAPI = new MDCSwitch(dailyHourlySwitch);
 
 
 dailyHourlySwitch.addEventListener('click', changeForecast);
@@ -139,6 +140,7 @@ function renderText(data) {
     function renderDailyWeatherText() {
         data.dailyData.forEach((day, index) => {
             let nameOfDayDiv;
+            let temperatureContainer;
             let maxTemp;
             let minTemp;
             let icon;
@@ -150,6 +152,8 @@ function renderText(data) {
                 singleDay.classList = `single-day day${index}`;
                 nameOfDayDiv = document.createElement('div');
                 nameOfDayDiv.className = `name-of-day day${index}`;
+                temperatureContainer = document.createElement('div');
+                temperatureContainer.className = `temp-container day${index}`;
                 maxTemp = document.createElement('div');
                 maxTemp.className = `max-temp day${index}`;
                 minTemp = document.createElement('div');
@@ -159,6 +163,7 @@ function renderText(data) {
             } else {
                 /* This block is for every daily forecast loaded (for any city searched)
                 for by the user */
+                temperatureContainer = document.querySelector(`.temp-container.day${index}`);
                 maxTemp = document.querySelector(`.max-temp.day${index}`);
                 minTemp = document.querySelector(`.min-temp.day${index}`);
                 nameOfDayDiv = document.querySelector(`.name-of-day.day${index}`);
@@ -180,7 +185,8 @@ function renderText(data) {
 
             if (dailyForecastDiv.children.length >= 0 && dailyForecastDiv.children.length <= 6) {
                 // Only for initially-loaded New York daily forecast
-                singleDay.append(nameOfDayDiv, maxTemp, minTemp, icon);
+                temperatureContainer.append(maxTemp, minTemp);
+                singleDay.append(nameOfDayDiv, temperatureContainer, icon);
                 dailyForecastDiv.append(singleDay);
             }    
         });
@@ -293,18 +299,18 @@ function fillDot1() {
 }
 
 function changeForecast() {
-    if (dailyHourlySwitch.checked === true) {
+    if (dailyHourlySwitchAPI.selected) {
         show8HourForecast();
     } else {
         showDailyForecast();
     }
     function show8HourForecast() {
         dailyForecastDiv.style.display = 'none';
-        navDots.style.display = 'flex';
+        navDots.style.display = 'inline-flex';
         fillDot1();
     }
     function showDailyForecast() {
-        dailyForecastDiv.style.display = 'flex';
+        dailyForecastDiv.style.display = 'block';
         firstEightHoursDiv.style.display = 'none';
         secondEightHoursDiv.style.display = 'none';
         thirdEightHoursDiv.style.display = 'none';

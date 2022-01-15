@@ -3,10 +3,15 @@
 /* stylelint-disable-next-line comment-empty-line-before */
 
 body {
-  padding: 0.5rem;
+  padding: 0.7rem;
   background-image: url('../dist/images/sky2.jpeg');
   background-size: cover;
   font-family: sans-serif;
+}
+
+footer {
+	display: flex;
+	justify-content: center;
 }
 
 .first-eight-hours,
@@ -34,13 +39,33 @@ body {
 	justify-content: space-between;
 }
 
+.first-eight-hours,
+.second-eight-hours,
+.third-eight-hours {
+	flex-direction: column;
+}
+
+.chance-precipitation {
+  margin-bottom: 1rem;
+}
+
 .city-input {
+  margin-bottom: 0.5rem;
+}
+
+.current-temp {
+	font-size: 1.7rem;
+	font-weight: bold;
   margin-bottom: 0.5rem;
 }
 
 .current-weather {
 	display: flex;
 	flex-direction: column;
+}
+
+.daily-forecast {
+  margin-bottom: 1rem;
 }
 
 .description {
@@ -65,6 +90,14 @@ body {
   max-width: 100%;
 }
 
+.max-temp {
+	font-weight: bold;
+}
+
+.name-of-day {
+	min-width: 50%;
+}
+
 .navigation-dots {
   display: none;
   width: 120px;
@@ -79,17 +112,92 @@ body {
   margin-bottom: 0.5rem;
 }
 
-.temp {
-	font-size: 1.7rem;
-	font-weight: bold;
-  margin-bottom: 0.5rem;
+.single-day {
+	display: flex;
+	justify-content: space-between;
+	align-items: center;
 }
 
+.single-hour {
+	display: flex;
+	justify-content: space-between;
+  align-items: center;
+}
 
+.temp {
+	white-space: nowrap;
+  font-weight: bold;
+}
 
+.time {
+	min-width: 50%;
+}
 
+@media (min-width: 600px) {
 
+  .daily-forecast {
+    display: flex;
+    justify-content: space-around;
+  }
 
+  .forecast-buttons {
+    margin-bottom: 1rem;
+  }
 
+  .icon {
+    max-width: 100%;
+  }
 
+  .more-stats {
+    width: 70%;
+    max-width: 470px;
+    align-self: center;
+  }
 
+  .row {
+    margin-bottom: 1rem;
+  }
+
+  .single-day {
+    flex-direction: column;
+  }
+
+  .single-hour {
+    flex-direction: column;
+  }
+
+  .first-eight-hours,
+  .second-eight-hours,
+  .third-eight-hours {
+    flex-direction: row;
+  }
+}
+
+@media (min-width: 900px) {
+  body {
+    font-size: 20px;
+  }
+
+  .humidity,
+  .feels-like,
+  .wind-speed,
+  .chance-precipitation {
+    margin-bottom: 0.5rem;
+  }
+
+  .chance-precipitation {
+    gap: 1rem;
+  }
+
+  .current-weather {
+    flex-direction: row;
+    gap: 1rem;
+    justify-content: space-around;
+  }
+
+  .more-stats {
+    width: auto;
+    max-width: none;
+    align-self: auto;
+  }
+}
