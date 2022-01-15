@@ -14,6 +14,16 @@ footer {
 	justify-content: center;
 }
 
+button.no-default-styles {
+  /* this is for certain buttons which should have no default styling, but need
+  to utilize the <button> tag for proper semantics */
+  all: unset;
+}
+
+button:hover {
+  cursor: pointer;
+}
+
 .first-eight-hours,
 .second-eight-hours,
 .third-eight-hours {
