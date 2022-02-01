@@ -23,8 +23,8 @@ fetched data from a third-party API.  My app actually connects to two APIs.
 
 ### Links
 
-- [Live site](https://mattdimicelli.github.io/weather-app/)
-- [Repo](https://github.com/mattdimicelli/weather-app)
+- [Live site](https://mattdimicelli.github.io/No_Framework_Weather_App/)
+- [Repo](https://github.com/mattdimicelli/No_Framework_Weather_App/)
 
 ## My process
 
