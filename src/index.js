@@ -43,28 +43,42 @@ function initializePage() {
 }
 
 function getForecast(city) {
-    getCityWeather(city).then(data => {                  
+    getCoordinates(city)
+        .then(getCityWeather)
+        .then(data => {                  
         renderText(data);
         renderCurrentWeatherImg(data);
         return data;
     }).catch(err => console.error(err));
 }
 
-async function getCityWeather(city) {
+async function getCoordinates(city) {
+    const response = await fetch(
+        `http://api.openweathermap.org/geo/1.0/direct?q=${city}` +
+        '&limit=1&appid=72e691cc8e68804d3b51462e3f5c963f',
+        { mode: 'cors' }
+    );
+    const data = await response.json();
+    
+    const coords = { 
+        lat: data[0].lat,
+        lon: data[0].lon,
+    };
+    return coords;
+}
+
+async function getCityWeather({lat, lon}) {
 
     const responseCurrentWeather 
     = await fetch(
-    `https://api.openweathermap.org/data/2.5/weather?q=${city}&units=imperial&appid=72e691cc8e68804d3b51462e3f5c963f`
+    `https://api.openweathermap.org/data/2.5/weather?lat=${lat}&lon=${lon}&appid=72e691cc8e68804d3b51462e3f5c963f`
     , { mode: 'cors' }
     );
     const dataCurrent = await responseCurrentWeather.json();
 
-    const longitude = dataCurrent.coord.lon;
-    const latitude = dataCurrent.coord.lat;
-
     const responseHourlyAndDaily 
     = await fetch(
-    `https://api.openweathermap.org/data/2.5/onecall?lat=${latitude}&lon=${longitude}&units=imperial&exclude=current,minutely,alerts&appid=72e691cc8e68804d3b51462e3f5c963f`
+    `https://api.openweathermap.org/data/2.5/onecall?lat=${lat}&lon=${lon}&units=imperial&exclude=current,minutely,alerts&appid=72e691cc8e68804d3b51462e3f5c963f`
     , { mode: 'cors' });
     const dataHourlyAndDaily = await responseHourlyAndDaily.json();
     
@@ -350,7 +364,7 @@ function convertTempToChosenScaleAndRound(value) {
 
 
 async function getWeatherImg(weatherCategory) {
-    const response = await fetch(`https://api.giphy.com/v1/gifs/translate?api_key=yAhCNvI0f6znmTUpEGMtSmH48m1iAzKU&s=${weatherCategory}`, { mode: 'cors'} );
+    const response = await fetch(`https://api.giphy.com/v1/gifs/translate?api_key=gT1i9Rf3Xte3M2KFljnuQRi1vDF2oE5U=${weatherCategory}`, { mode: 'cors'} );
     const data = await response.json();
     const gifObj = data.data;
     return { url: gifObj.images.fixed_height.url, title: gifObj.title };
