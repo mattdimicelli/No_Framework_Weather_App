@@ -54,7 +54,7 @@ function getForecast(city) {
 
 async function getCoordinates(city) {
     const response = await fetch(
-        `http://api.openweathermap.org/geo/1.0/direct?q=${city}` +
+        `https://api.openweathermap.org/geo/1.0/direct?q=${city}` +
         '&limit=1&appid=72e691cc8e68804d3b51462e3f5c963f',
         { mode: 'cors' }
     );
